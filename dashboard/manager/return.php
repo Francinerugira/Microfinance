@@ -1,4 +1,36 @@
+<?php 
+include "../../db_connection.php";
+$id = $_GET['id'];
+$teller_id = $_GET['teller_id'];
+$date = date('Y-m-d');
 
+  $sql = "SELECT * FROM transactions WHERE teller = $teller_id AND transaction_date = '$date' AND cust_id != 'bank'"; // SQL with parameters
+  $stmt = $conn->prepare($sql); 
+  $stmt->execute();
+  $result = $stmt->get_result(); // get the mysqli result
+  // $rowcount = $result->num_rows; 
+    
+    $result_flow = $conn->query("SELECT * FROM flows WHERE flow_id = $id AND flow_date = '$date' AND flow_status = 'active' ");
+    $rows = $result_flow->fetch_assoc();
+    $rowcount = $result_flow->num_rows;
+    if($rowcount >0){
+
+      $balance = $rows['given_balance'];
+    }else{
+      $balance = 0;
+    }
+
+$result_credit = $conn->query("SELECT sum(amount) as sum FROM transactions WHERE teller = $teller_id AND transaction_date = '$date' AND action = 'credit' AND cust_id != 'bank' ");
+$result_debit = $conn->query("SELECT sum(amount) as sum FROM transactions WHERE teller = $teller_id AND transaction_date = '$date' AND action = 'debit' AND cust_id != 'bank'");
+
+$row = $result_credit->fetch_assoc();
+$rows = $result_debit->fetch_assoc();
+
+$sum_debit = $rows['sum'];
+$sum_credit = $row['sum'];
+$sum = ($balance + $sum_credit) - $sum_debit;
+// echo $sum;
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,7 +38,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credit Customer</title>
+    <title>Debit Customer</title>
     <link href="../css/bootstrap.css" rel="stylesheet">
     <link href="../fontawesome/css/all.css" media="screen" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="../css/font-awesome.min.css">
@@ -19,11 +51,11 @@
   } 
 
   .forms {
-    border-radius: 15px;
+    border-radius: 20px;
     position: relative;
     top: 50px;
     width: 700px;
-    height: 420px;
+    height: 250px;
     padding-top: 50px;
     padding-bottom: 5px;
     margin-left: 15%;
@@ -52,10 +84,10 @@
     padding-bottom: 10px;
     margin-top: 10px;
   }
+
   button {
     cursor: pointer;
     position: relative;
-    top: 50px;
     padding: 15px;
     margin-left: 300px!important;
     font-size: 15px;
@@ -69,6 +101,7 @@
       font-size: 18px;
       background-color: #383332;
   }
+
   .sidebar-nav {
     padding: 50px 0;
     
@@ -77,6 +110,7 @@
 
 </head>
 <body>
+    <?php include('header.php');?>
     <div class="container-fluid">
       <div class="row-fluid">
 	<div class="span2"> 
@@ -85,13 +119,12 @@
               <ul class="nav nav-list">
               
               <li><a href="managerDashboard.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
-              <li class="active"><a href="change.php"><i class="icon-user icon-2x"></i> New Password </a></li>
-              <li><a href="flow.php"><i class="icon-user icon-2x"></i> Requested Flow </a></li>
-              <li><a href="listCustomer.php"><i class="icon-group icon-2x"></i> All Customers</a> </li> 
-              <li><a href="statment.php"><i class="icon-money icon-2x"></i> Statment</a> </li>  
+              <li><a href="change.php"><i class="icon-user icon-2x"></i> New Password </a></li>
+              <li  class="active"><a href="flow.php"><i class="icon-user icon-2x"></i> Requested Flow </a></li>
+              <li><a href="listCustomer.php"><i class="icon-group icon-2x"></i> All Customers</a> </li>  
               <li><a href="report.php"><i class="icon-bar-chart icon-2x"></i> Report</a> </li> 
 
-			<br><br><br>
+			<br><br>
 			<li>
 			 <div class="hero-unit-clock">
 		
@@ -102,68 +135,55 @@
 			</li>
 				</ul>                               
           </div>
-        </div><!--/span-->
-    <?php include('header.php');?>
-    <div class="span10">
+        </div>
+        <div class="span10">
 	<div class="contentheader">
-			<i class="icon-user"></i> Change Password
+			<i class="icon-money"></i> Flow
 			</div>
 			<ul class="breadcrumb">
-			<li><a href="managerDashboard.php">Dashboard</a></li> /
-			<li class="active">Change Password</li>
+			<li><a href="tellerDashboard.php">Dashboard</a></li> /
+			<li class="active">Returned Flow</li>
 			</ul>
-
-    <div class="forms">
+      
+          <div class="forms">
         <form method="post" action="">
-        <p style="font-weight:bold; text-align:center; font-size: 22px"> Change Password</p><br>
-            <label> New Password</label>
+            <p style="font-weight:bold; text-align:center; font-size: 22px"> Return Flow</p><br>
             <input type="hidden" name="id" value="<?php echo $id;?>">
-            <input type="password" name="password" placeholder="New Password" required>
-            <label> Comfirm New Password</label>
-            <input type="password" name="cpassword" placeholder="Comfirm New Password" required>
-             <button type="submit" name="save" class=""> Save </button>
+            <label> Amount To Return</label>
+            <input type="text" name="amount" value="<?php echo $sum;?>" disabled><br><br><br>
+            <button type="submit" name="save" class=""> Returned </button>
 </form>
     </div>
 </body>
 </html>
 
-
 <?php 
 require_once "../../db_connection.php";
 
 if(isset($_POST['save'])){
-
-    // print_r($_POST);
-
-    $password = $_POST['password'];
-    $cpassword = $_POST['cpassword'];
-
-    $id = $_POST['id'];
-
-    if($password != $cpassword){
-        echo '<script>
-    alert(" comfirm password and password must be the same ");
-window.location.href="change.php";
-</script>';
-    }else{
     
-      $password = password_hash($password, PASSWORD_DEFAULT);
+       
+            $sql = "UPDATE flows SET flow_status = ? WHERE flow_id = ?";
+          if($result = mysqli_prepare($conn, $sql)){
+              $status = "return checked";
+              // Bind variables to the prepared statement as parameters
+          mysqli_stmt_bind_param($result, "si", $status, $id);
+          
 
-  $result = $conn->prepare("UPDATE staffs SET password = ? WHERE staff_id = ?");
-	$result->bind_param('ss', $password, $id);
-	$result->execute();
-
-    if($result){
+      if(mysqli_stmt_execute($result)){
       
         // Redirect back
         echo '<script>
-    alert(" Successfully Saved!! ");
-window.location.href="change.php";
+    alert(" Successfully Checked Return!! ");
+window.location.href="flow.php";
 </script>';
     } else{
         echo "Something went wrong. Please try again later.";
     }
-    }
     
 }
+    // Close statement
+    mysqli_stmt_close($result);
+}
  ?>
+

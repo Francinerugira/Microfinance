@@ -101,15 +101,19 @@ $balance = $credit - $debit;
       <div class="row-fluid">
 	<div class="span2"> 
           <div class="well sidebar-nav">
-         <center> <img src="../../img/bank.png" alt="bank"class="rounded-circle" width="100"></center><br>
               <ul class="nav nav-list">
               
               <li><a href="tellerDashboard.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li> 
-              <li><a href="credit.php"><i class="icon-money icon-2x"></i> Credit Customer</a>  </li>  
-              <li ><a href="debit.php"><i class="icon-money icon-2x"></i> Debit Customer</a>  </li>  
-              <li><a href="listCustomer.php"><i class="icon-group icon-2x"></i> All Customers</a> </li>  
+              <li><a href="change.php"><i class="icon-user icon-2x"></i>	New Password</a></li>
+              <li><a href="balance.php"><i class="icon-money icon-2x"></i>	Balance</a></li>
+              <li><a href="transaction.php"><i class="icon-money icon-2x"></i>	View transaction</a></li>
+              <li><a href="customer.php"><i class="icon-plus-sign icon-2x"></i> Add Customer</a>  </li> 
+              <li><a href="credit.php"><i class="icon-money icon-2x"></i> Deposit</a>  </li>  
+              <li ><a href="debit.php"><i class="icon-money icon-2x"></i> Withdraw</a>  </li> 
+              <li ><a href="statment.php"><i class="icon-money icon-2x"></i> Statment</a>  </li> 
+              <li  class="active"><a href="listCustomer.php"><i class="icon-group icon-2x"></i> All Customers</a> </li> 
 
-			<br><br><br><br><br><br><br><br><br>
+			<br>
 			<li>
 			 <div class="hero-unit-clock">
 			<form name="clock">

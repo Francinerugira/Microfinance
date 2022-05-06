@@ -1,12 +1,10 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credit Customer</title>
+    <title>Debit Customer</title>
     <link href="../css/bootstrap.css" rel="stylesheet">
     <link href="../fontawesome/css/all.css" media="screen" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="../css/font-awesome.min.css">
@@ -19,11 +17,11 @@
   } 
 
   .forms {
-    border-radius: 15px;
+    border-radius: 20px;
     position: relative;
     top: 50px;
     width: 700px;
-    height: 420px;
+    height: 250px;
     padding-top: 50px;
     padding-bottom: 5px;
     margin-left: 15%;
@@ -31,6 +29,7 @@
   }
 
   .forms label{
+    font-family: verdana, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 15px;
     font-weight: bold;
     margin-left: 50px;
@@ -51,10 +50,10 @@
     padding-bottom: 10px;
     margin-top: 10px;
   }
+
   button {
     cursor: pointer;
     position: relative;
-    top: 50px;
     padding: 15px;
     margin-left: 300px!important;
     font-size: 15px;
@@ -68,15 +67,16 @@
       font-size: 18px;
       background-color: #383332;
   }
+
   .sidebar-nav {
     padding: 50px 0;
     
   }
 </style>
 
-
 </head>
 <body>
+    <?php include('header.php');?>
     <div class="container-fluid">
       <div class="row-fluid">
 	<div class="span2"> 
@@ -84,11 +84,14 @@
          <center> <img src="../../img/bank.png" alt="bank"class="rounded-circle" width="100"></center><br>
               <ul class="nav nav-list">
               
-              <li><a href="adminDashboard.php"><i class="icon-dashboard icon-large"></i> Dashboard </a></li>
-              <li class="active"><a href="change.php"><i class="icon-user icon-large"></i> New Password</a>  </li> 
-              <li><a href="staff.php"><i class="icon-plus-sign icon-large"></i> Add Staff</a>  </li>   
-              <li><a href="listCustomer.php"><i class="icon-group icon-large"></i> All Staffs</a> </li>  
-			<br><br><br><br><br><br><br><br><br>
+              <li><a href="managerDashboard.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
+              <li><a href="change.php"><i class="icon-user icon-2x"></i> New Password </a></li>
+              <li  class="active"><a href="flow.php"><i class="icon-user icon-2x"></i> Requested Flow </a></li>
+              <li><a href="listCustomer.php"><i class="icon-group icon-2x"></i> All Customers</a> </li> 
+              <li><a href="statment.php"><i class="icon-money icon-2x"></i> Statment</a> </li>  
+              <li><a href="report.php"><i class="icon-bar-chart icon-2x"></i> Report</a> </li> 
+
+			<br><br><br>
 			<li>
 			 <div class="hero-unit-clock">
 		
@@ -99,68 +102,77 @@
 			</li>
 				</ul>                               
           </div>
-        </div><!--/span-->
-    <?php include('header.php');?>
-    <div class="span10">
+        </div>
+        <div class="span10">
 	<div class="contentheader">
-			<i class="icon-user"></i> Change Password
+			<i class="icon-money"></i> Flow
 			</div>
 			<ul class="breadcrumb">
-			<li><a href="adminDashboard.php">Dashboard</a></li> /
-			<li class="active">Change Password</li>
+			<li><a href="tellerDashboard.php">Dashboard</a></li> /
+			<li class="active">Respond Flow</li>
 			</ul>
-
-    <div class="forms">
+      
+          <div class="forms">
         <form method="post" action="">
-        <p style="font-weight:bold; text-align:center; font-size: 22px"> Change Password</p><br>
-            <label> New Password</label>
+            <p style="font-weight:bold; text-align:center; font-size: 22px"> Respond Flow</p><br>
             <input type="hidden" name="id" value="<?php echo $id;?>">
-            <input type="password" name="password" placeholder="New Password" required>
-            <label> Comfirm New Password</label>
-            <input type="password" name="cpassword" placeholder="Comfirm New Password" required>
-             <button type="submit" name="save" class=""> Save </button>
+            <label> Amount</label>
+            <input type="number" name="amount" placeholder="Amount Request" required><br><br><br>
+            <button type="submit" name="save" class=""> Respond </button>
 </form>
     </div>
 </body>
 </html>
 
-
 <?php 
 require_once "../../db_connection.php";
 
 if(isset($_POST['save'])){
+    $id = $_GET['id'];
+    $balance = $_GET['balance'];
+    $manager = $_POST['id'];
+    $amount = $_POST['amount'];
+    $date = date('Y-m-d H:i:s');
 
-    // print_r($_POST);
 
-    $password = $_POST['password'];
-    $cpassword = $_POST['cpassword'];
+        $results = $conn->query("SELECT * FROM bank_balances");
+        $rows = $results->fetch_assoc();
+        $sum = $rows['bank_balance'];
 
-    $id = $_POST['id'];
-
-    if($password != $cpassword){
-        echo '<script>
-    alert(" comfirm password and password must be the same ");
-window.location.href="change.php";
+        if($sum < $amount){
+            echo '<script>
+    alert(" Insufficient fund in the bank!! ");
+window.location.href="flow.php";
 </script>';
-    }else{
-    
-      $password = password_hash($password, PASSWORD_DEFAULT);
 
-  $result = $conn->prepare("UPDATE staffs SET password = ? WHERE staff_id = ?");
-	$result->bind_param('ss', $password, $id);
-	$result->execute();
+        }else{
+            $sql = "UPDATE flows SET manager_id = ?, given_balance = ?, flow_date = ?, flow_status = ? WHERE flow_id = ?";
+          if($result = mysqli_prepare($conn, $sql)){
+              $status = "active";
+              // Bind variables to the prepared statement as parameters
+          mysqli_stmt_bind_param($result, "sssssi", $manager, $amount, $date, $status, $id);
+          
 
-    if($result){
+      if(mysqli_stmt_execute($result)){
+        //   $new_balance = $sum - $amount;
+
+        // $results = $conn->prepare("UPDATE bank_balances SET bank_balance = ? WHERE bank_id = ?");
+        // $id = 1;
+        // $results->bind_param('si', $new_balance, $id);
+        // $results->execute();
       
         // Redirect back
         echo '<script>
-    alert(" Successfully Saved!! ");
-window.location.href="change.php";
+    alert(" Successfully Requested!! ");
+window.location.href="flow.php";
 </script>';
     } else{
         echo "Something went wrong. Please try again later.";
     }
     }
-    
+}
+    // Close statement
+    mysqli_stmt_close($result);
 }
  ?>
+

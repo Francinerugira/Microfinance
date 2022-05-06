@@ -37,7 +37,7 @@ $account_number = mt_rand(1000000000,9999999999);
 
         $bank = 'bank';
         $bank_type = 'debit';
-        $bank_type = 'credit';
+        $cust_type = 'credit';
 
 
 

@@ -1,7 +1,7 @@
 <?php 
 require_once "../../db_connection.php";
 
-$sql = "SELECT * FROM customers"; // SQL with parameters
+$sql = "SELECT * FROM staffs"; // SQL with parameters
 $stmt = $conn->prepare($sql); 
 $stmt->execute();
 $result = $stmt->get_result(); // get the mysqli result
@@ -20,12 +20,15 @@ $rowcount = $result->num_rows;
 <title>Customers Lists</title>
 
 <script src="../js/jeffartagame.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+   <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script src="../js/application.js" type="text/javascript" charset="utf-8"></script>
 <script src="../lib/jquery.js" type="text/javascript"></script>
 <link href="../css/bootstrap.css" rel="stylesheet">
 <link href="../fontawesome/css/all.css" media="screen" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="../css/font-awesome.min.css">
 <script src="../time.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/jquery.js"></script>
 
     
     <style>
@@ -59,9 +62,8 @@ $rowcount = $result->num_rows;
               <li><a href="adminDashboard.php"><i class="icon-dashboard icon-large"></i> Dashboard </a></li>
               <li><a href="change.php"><i class="icon-user icon-large"></i> New Password</a>  </li> 
               <li><a href="staff.php"><i class="icon-plus-sign icon-large"></i> Add Staff</a>  </li>  
-              <li><a href="customer.php"><i class="icon-plus-sign icon-large"></i> Add Customer</a>  </li>  
-              <li class="active"><a href="listCustomer.php"><i class="icon-group icon-large"></i> All Customer</a> </li>  
-              <li><a href="statment.php"><i class="icon-money icon-large"></i> Account Statment</a> </li>    
+              <li class="active"><a href="listCustomer.php"><i class="icon-group icon-large"></i> All Staffs</a> </li>  
+              <!-- <li><a href="statment.php"><i class="icon-money icon-large"></i> Account Statment</a> </li>     -->
 
 			<br><br><br><br><br><br><br><br><br>
 			<li>
@@ -90,16 +92,16 @@ $rowcount = $result->num_rows;
 			Total Number of Customers:  <font color="green" style="font-weight:bold ;">[<?php echo $rowcount;?>]</font>
 			</div>
       <br>
-<input type="text" style="padding:10px; width: 50%" name="filter"  id="filter" placeholder="Search Customer..." autocomplete="off" />
+<input type="text" style="padding:10px; width: 50%" name="filter"  id="filter" placeholder="Search Staff..." autocomplete="off" />
 
     <table class="table table-bordered" id="resultTable" data-responsive="table">
         <tr>
             <thead>
                 <th> SNo </th>
-                <th>Customer Name </th>
-                <th>Customer Address </th>
-                <th>Customer Phone </th>
-                <th>Type Of account </th>
+                <th>Staff Name </th>
+                <th>Staff Address </th>
+                <th>Staff Phone </th>
+                <th>Staff Role </th>
                 <th>Action </th>
             </thead>
         </tr>
@@ -111,29 +113,18 @@ $rowcount = $result->num_rows;
                 ?>
             <tr>
                 <td> <?php echo $i;?> </td>
-                <td> <?php echo $rows['first_name']. " ".$rows['last_name'];?></td>
+                <td> <?php echo $rows['Name'];?></td>
                 <td> <?php echo $rows['address'];?></td>
                 <td> <?php echo $rows['phone_number'];?></td>
-                <td> <?php echo $rows['type_of_account'];?></td>
-                <td> <a class="btn view" href="viewCustomers.php?id=<?php echo $rows['customer_id'];?>"> View Details</a>
-                <?php
-                if($rows['status'] == 'active') {
-                ?>
-                <a class="btn btn-danger block" href="#" id="<?php echo $rows['customer_id'];?>"> Block </a></td>
-                <?php
-                }else {
-                ?>
-                <a class="btn btn-info active" href="#" id="<?php echo $rows['customer_id'];?>"> Activate </a></td>
-                <?php 
-                }
-                ?>
+                <td> <?php echo $rows['role'];?></td>
+                <td> <a class="btn view" href="viewCustomers.php?id=<?php echo $rows['staff_id'];?>"> View Details</a>
+               
             </tr>
             <?php
             }
             ?>
             </div></div></div>
 </table>
-
 <script type="text/javascript">
 $(function() {
 $(".block").click(function(){

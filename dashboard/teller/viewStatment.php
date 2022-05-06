@@ -1,15 +1,17 @@
 <?php
 require "../../db_connection.php";
+
 $id = $_GET['id'];
 
-$sql = "SELECT * FROM customers WHERE customer_id = ?"; // SQL with parameters
-$stmt = $conn->prepare($sql); 
-$stmt->bind_param("i", $id);
-$stmt->execute();
-$result = $stmt->get_result(); // get the mysqli result
-$rows = $result->fetch_assoc(); // fetch data  
-$image = $rows['profile_photo'];
-$scr = "../../Upload/".$image;
+$sql_cr = "SELECT *  FROM transactions WHERE cust_id = '$id'  ";
+$result_cre = mysqli_query($conn, $sql_cr);
+
+$sql_cr = "SELECT * FROM transactions WHERE cust_id = ?"; // SQL with parameters
+$stmt_cr = $conn->prepare($sql_cr); 
+$stmt_cr->bind_param("i", $id);
+$stmt_cr->execute();
+$result_cre = $stmt_cr->get_result(); // get the mysqli result
+
 
 // Total credit in this account
 $sql_credit = "SELECT SUM(amount) as sum  FROM customers INNER JOIN transactions ON transactions.cust_id = customers.customer_id WHERE customer_id = ? AND action = ? ";
@@ -20,6 +22,9 @@ $stmt_credit->execute();
 $res_credit = $stmt_credit->get_result();
 $row = $res_credit->fetch_assoc();
 $credit = $row['sum'];
+if($credit == ""){
+    $credit = 0;
+}
 
 // Total debited in this account
 
@@ -32,6 +37,9 @@ $res_debit = $stmt_debit->get_result();
 $row = $res_debit->fetch_assoc();
 $debit = $row['sum'];
 
+if($debit == ""){
+    $debit = 0;
+}
 
 // Total balance in account
 $balance = $credit - $debit;
@@ -48,7 +56,6 @@ $balance = $credit - $debit;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Details</title>
 
-    
     <link href="../css/bootstrap.css" rel="stylesheet">
     <link href="../fontawesome/css/all.css" media="screen" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="../css/font-awesome.min.css">
@@ -59,10 +66,7 @@ $balance = $credit - $debit;
     body {
     background: #ffffff url(../../img/4.png)!important;
     margin: 0px;
-  } 
-  </style>
-
-    <style>
+    }
     .content{
         border-radius: 15px;
         position: relative;
@@ -75,20 +79,9 @@ $balance = $credit - $debit;
         box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
 
   }
-    .content label{
-      padding-top:5px;
-      padding-bottom:5px;
-      padding-left:50px;
-      padding-right:50px;
-      margin:0px;
-      font-weight: bold;
-      color: black;
-      font-size:16px;
-      display: inline-block;
-      width: 265px;
-      height: 35px;
-      text-align: center;
-      margin-bottom: 5px;
+    .content table{
+        width: 85%;
+        margin-left: 100px;
       }    
       .sidebar-nav {
     padding: 50px 0;
@@ -104,17 +97,21 @@ $balance = $credit - $debit;
       <div class="row-fluid">
 	<div class="span2"> 
           <div class="well sidebar-nav">
-         <center> <img src="../../img/bank.png" alt="bank"class="rounded-circle" width="100"></center><br>
+         <!-- <center> <img src="../../img/bank.png" alt="bank"class="rounded-circle" width="100"></center><br> -->
               <ul class="nav nav-list">
               
-              <li><a href="managerDashboard.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
-              <li><a href="change.php"><i class="icon-user icon-2x"></i> New Password </a></li>
-              <li><a href="flow.php"><i class="icon-user icon-2x"></i> Requested Flow </a></li>
-              <li class="active"><a href="listCustomer.php"><i class="icon-group icon-2x"></i> All Customers</a> </li> 
-              <li><a href="statment.php"><i class="icon-money icon-2x"></i> Account Statment</a> </li>  
-              <li><a href="report.php"><i class="icon-bar-chart icon-2x"></i> Report</a> </li>
+              <li><a href="tellerDashboard.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li> 
+              <li><a href="change.php"><i class="icon-user icon-2x"></i>	New Password</a></li>
+              <li><a href="balance.php"><i class="icon-money icon-2x"></i>	Balance</a></li>
+              <li><a href="flow.php"><i class="icon-money icon-2x"></i>	Request Flow</a></li>
+              <li><a href="transaction.php"><i class="icon-money icon-2x"></i>	View transaction</a></li>
+              <li><a href="customer.php"><i class="icon-plus-sign icon-2x"></i> Add Customer</a>  </li> 
+              <li><a href="credit.php"><i class="icon-money icon-2x"></i> Deposit</a>  </li>  
+              <li ><a href="debit.php"><i class="icon-money icon-2x"></i> Withdraw</a>  </li> 
+              <li  class="active"><a href="statment.php"><i class="icon-money icon-2x"></i> Statment</a>  </li> 
+              <li><a href="listCustomer.php"><i class="icon-group icon-2x"></i> All Customers</a> </li>    
 
-			<br><br><br>
+			<br>
 			<li>
 			 <div class="hero-unit-clock">
 			<form name="clock">
@@ -133,22 +130,38 @@ $balance = $credit - $debit;
 			<li><a href="adminDashboard.php">Dashboard</a></li> /
 			<li class="active">Customer Details</li>
 			</ul>
-<div style="margin-top: -19px; margin-bottom: 21px;">
-<a  href="listCustomer.php"><button class="btn btn-default btn-large" style="float: none;"><i class="icon icon-circle-arrow-left icon-large"></i> Back</button></a>
+      <div style="margin-top: -19px; margin-bottom: 21px;">
+<a  href="statment.php"><button class="btn btn-default btn-large" style="float: none;"><i class="icon icon-circle-arrow-left icon-large"></i> Back</button></a>
 </div>
 <div class="content">
-  <center><img src="<?php echo $scr;?>" alt="customer"class="rounded-circle" width="200"></center><br>
-  <label> Name : <?php echo $rows['first_name']. " ". $rows['last_name'];?></label>
-  <label> Customer Id: <?php echo $rows['national_id'];?></label>
-  <label> Phone Number : <?php echo $rows['phone_number'];?></label>
-  <label> Email : <?php echo $rows['email'];?></label>
-  <label> Customer  gender : <?php echo $rows['gender'];?></label>
-  <label> Date of Birth : <?php echo $rows['date_of_birth'];?></label>
-  <label> Account Number : <?php echo $rows['account_number'];?></label>
-  <label> Type of account: <?php echo $rows['type_of_account'];?></label>
-  <label> Branch of account: <?php echo $rows['branch'];?></label>
-  <label> Account status: <?php echo $rows['status'];?></label>
-  <label> Customer address : <?php echo $rows['address'];?></label><br><hr>
+<u><p style="font-weight:bold; text-align:center; font-size: 22px"> Record about Credit</p></u><br>
+<table class="table table-bordered" id="resultTable" data-responsive="table">
+    <thead>
+        <tr>
+        <th>Date</th>
+        <th> Action</th>
+        <th> Amount </th>
+        <th> Description</th>
+</tr>
+</thead>
+<tbody>
+    <?php 
+        while($ro = $result_cre->fetch_assoc()){
+            ?>
+            <tr>
+        <td><?php echo $ro['transaction_date'];?></td>
+        <td><?php echo $ro['action'];?></td>
+        <td><?php echo $ro['amount'];?></td>
+        <td><?php echo $ro['description'];?></td>
+</tr>
+<?php
+        }
+        ?>
+        </tbody>
+</table><hr><br>
+
+  <label style="font-size:19px"> Total Debited : <?php echo $debit;?> RWF</label>
+  <label style="font-size:19px"> Total Credited : <?php echo $credit;?> RWF</label><hr>
   <label style="font-size:22px"> Balance: <?php echo $balance;?> RWF</label>
 </div>
                          

@@ -41,7 +41,7 @@ if(isset($_POST['save'])){
       
         // Redirect back
         echo '<script>
-    alert(" Successfully credit customer!! ");
+    alert(" Successfully Deposit customer!! ");
 window.location.href="credit.php";
 </script>';
     } else{

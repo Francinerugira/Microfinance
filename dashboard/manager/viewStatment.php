@@ -100,14 +100,14 @@ $balance = $credit - $debit;
          <center> <img src="../../img/bank.png" alt="bank"class="rounded-circle" width="100"></center><br>
               <ul class="nav nav-list">
               
-              <li><a href="adminDashboard.php"><i class="icon-dashboard icon-large"></i> Dashboard </a></li>
-              <li><a href="change.php"><i class="icon-user icon-large"></i> New Password</a>  </li> 
-              <li><a href="staff.php"><i class="icon-plus-sign icon-large"></i> Add Staff</a>  </li>  
-              <li><a href="customer.php"><i class="icon-plus-sign icon-large"></i> Add Customer</a>  </li>  
-              <li><a href="listCustomer.php"><i class="icon-group icon-large"></i> All Customer</a> </li>  
-              <li><a href="statment.php"><i class="icon-money icon-large"></i> Account Statment</a> </li>    
+              <li><a href="managerDashboard.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
+              <li><a href="change.php"><i class="icon-user icon-2x"></i> New Password </a></li>
+              <li><a href="flow.php"><i class="icon-user icon-2x"></i> Requested Flow </a></li>
+              <li><a href="listCustomer.php"><i class="icon-group icon-2x"></i> All Customers</a> </li> 
+              <li class="active"><a href="statment.php"><i class="icon-money icon-2x"></i> Statment</a> </li>  
+              <li><a href="report.php"><i class="icon-bar-chart icon-2x"></i> Report</a> </li>   
 
-			<br><br><br><br><br><br><br><br><br>
+			<br><br><br>
 			<li>
 			 <div class="hero-unit-clock">
 			<form name="clock">

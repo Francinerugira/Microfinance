@@ -86,10 +86,8 @@
               
               <li><a href="adminDashboard.php"><i class="icon-dashboard icon-large"></i> Dashboard </a></li>
               <li><a href="change.php"><i class="icon-user icon-large"></i> New Password</a>  </li> 
-              <li class="active"><a href="staff.php"><i class="icon-plus-sign icon-large"></i> Add Staff</a>  </li>  
-              <li><a href="customer.php"><i class="icon-plus-sign icon-large"></i> Add Customer</a>  </li>  
-              <li><a href="listCustomer.php"><i class="icon-group icon-large"></i> All Customer</a> </li>  
-              <li><a href="statment.php"><i class="icon-money icon-large"></i> Account Statment</a> </li>       
+              <li class="active"><a href="staff.php"><i class="icon-plus-sign icon-large"></i> Add Staff</a>  </li> 
+              <li><a href="listCustomer.php"><i class="icon-group icon-large"></i> All Staffs</a> </li>      
 
 			<br><br><br><br><br><br><br><br><br>
 			<li>

@@ -1,12 +1,14 @@
 <?php 
 require_once "../../db_connection.php";
-
-$sql = "SELECT * FROM customers"; // SQL with parameters
+include('header.php');
+$sql = "SELECT * FROM flows INNER JOIN staffs ON staffs.staff_id = flows.teller_id"; // SQL with parameters
 $stmt = $conn->prepare($sql); 
 $stmt->execute();
 $result = $stmt->get_result(); // get the mysqli result
 $rowcount = $result->num_rows;
 
+
+  
 ?>
 
 
@@ -17,7 +19,7 @@ $rowcount = $result->num_rows;
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-<title>Customers Lists</title>
+<title>balance</title>
 
 <script src="../js/jeffartagame.js" type="text/javascript" charset="utf-8"></script>
 <script src="../js/application.js" type="text/javascript" charset="utf-8"></script>
@@ -45,11 +47,10 @@ $rowcount = $result->num_rows;
   </style>
 
 </style>
-
-
+ 
 </head>
 <body>
-<?php include('header.php');?>
+
     <div class="container-fluid">
       <div class="row-fluid">
 	<div class="span2"> 
@@ -59,10 +60,10 @@ $rowcount = $result->num_rows;
               
               <li><a href="managerDashboard.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
               <li><a href="change.php"><i class="icon-user icon-2x"></i> New Password </a></li>
-              <li><a href="flow.php"><i class="icon-user icon-2x"></i> Requested Flow </a></li>
-              <li class="active"><a href="listCustomer.php"><i class="icon-group icon-2x"></i> All Customers</a> </li> 
+              <li  class="active"><a href="flow.php"><i class="icon-user icon-2x"></i> Requested Flow </a></li>
+              <li><a href="listCustomer.php"><i class="icon-group icon-2x"></i> All Customers</a> </li> 
               <li><a href="statment.php"><i class="icon-money icon-2x"></i> Statment</a> </li>  
-              <li><a href="report.php"><i class="icon-bar-chart icon-2x"></i> Report</a> </li>  
+              <li><a href="report.php"><i class="icon-bar-chart icon-2x"></i> Report</a> </li>
 
 			<br><br><br>
 			<li>
@@ -79,28 +80,28 @@ $rowcount = $result->num_rows;
 
 <div class="span10">
 	<div class="contentheader">
-			<i class="icon-table"></i> Customers
+			<i class="icon-money"></i>Flow
 			</div>
 			<ul class="breadcrumb">
-			<li><a href="adminDashboard.php">Dashboard</a></li> /
-			<li class="active">All Customers</li>
+			<li><a href="managerDashboard.php">Dashboard</a></li> /
+			<li class="active">Requested Flow</li>
 			</ul>
 
       
 <div style="text-align:center;">
-			Total Number of Customers:  <font color="green" style="font-weight:bold ;">[<?php echo $rowcount;?>]</font>
+			Total Number of Flow:  <font color="green" style="font-weight:bold ;">[<?php echo $rowcount;?>]</font>
 			</div>
       <br>
-<input type="text" style="padding:10px; width: 50%" name="filter"  id="filter" placeholder="Search Customer..." autocomplete="off" />
+<input type="text" style="padding:10px; width: 50%" name="filter"  id="filter" placeholder="Search flow..." autocomplete="off" />
 
     <table class="table table-bordered" id="resultTable" data-responsive="table">
         <tr>
             <thead>
                 <th> SNo </th>
-                <th>Customer Name </th>
-                <th>Customer Address </th>
-                <th>Customer Phone </th>
-                <th>Type Of account </th>
+                <th>Date</th>
+                <th>Teller Name</th>
+                <th>Balance </th>
+                <th>Status</th>
                 <th>Action </th>
             </thead>
         </tr>
@@ -112,11 +113,26 @@ $rowcount = $result->num_rows;
                 ?>
             <tr>
                 <td> <?php echo $i;?> </td>
-                <td> <?php echo $rows['first_name']. " ".$rows['last_name'];?></td>
-                <td> <?php echo $rows['address'];?></td>
-                <td> <?php echo $rows['phone_number'];?></td>
-                <td> <?php echo $rows['type_of_account'];?></td>
-                <td> <a class="btn view" href="viewCustomers.php?id=<?php echo $rows['customer_id'];?>"> View Details</a></td>
+                <td> <?php echo $rows['flow_date'];?></td>
+                <td> <?php echo $rows['Name'];?></td>
+                <td> <?php echo $rows['request_balance'];?></td>
+                <td> <?php echo $rows['flow_status'];?></td>
+                <?php 
+                if($rows['flow_status'] == 'Requested'){
+                  ?>
+                  <td> <a class="btn view" href="respond.php?id=<?php echo $rows['flow_id']?>&teller_id=<?php echo $rows['teller_id'];?>"> Respond</a></td>
+                  <?php
+                }elseif($rows['flow_status'] == 'active'){
+                  ?>
+                  <td style="color:blue;"> Cash Flow still in Use .....</td>
+                  <?php
+                }else{
+                  ?>
+                  <td style="color:green;"> Already Returned Cash Flow</td>
+                  <!-- <td> <a class="btn view" href="respond.php?id=<?php echo $rows['flow_id']?>&balance= <?php echo $rows['teller_id'];?>"> Respond</a></td> -->
+                  <?php
+                }
+                ?>
             </tr>
             <?php
             }

@@ -3,14 +3,14 @@ require "../../db_connection.php";
 
 $id = $_GET['id'];
 
-$sql = "SELECT * FROM customers WHERE customer_id = ?"; // SQL with parameters
+$sql = "SELECT * FROM Staffs WHERE staff_id = ?"; // SQL with parameters
 $stmt = $conn->prepare($sql); 
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $result = $stmt->get_result(); // get the mysqli result
 $rows = $result->fetch_assoc(); // fetch data  
-$image = $rows['profile_photo'];
-$scr = "../../Upload/".$image;
+// $image = $rows['profile_photo'];
+// $scr = "../../Upload/".$image;
 
 // Total credit in this account
 $sql_credit = "SELECT SUM(amount) as sum  FROM customers INNER JOIN transactions ON transactions.cust_id = customers.customer_id WHERE customer_id = ? AND action = ? ";
@@ -109,10 +109,8 @@ $balance = $credit - $debit;
               
               <li><a href="adminDashboard.php"><i class="icon-dashboard icon-large"></i> Dashboard </a></li>
               <li><a href="change.php"><i class="icon-user icon-large"></i> New Password</a>  </li> 
-              <li><a href="staff.php"><i class="icon-plus-sign icon-large"></i> Add Staff</a>  </li>  
-              <li><a href="customer.php"><i class="icon-plus-sign icon-large"></i> Add Customer</a>  </li>  
-              <li><a href="listCustomer.php"><i class="icon-group icon-large"></i> All Customer</a> </li>  
-              <li><a href="statment.php"><i class="icon-money icon-large"></i> Account Statment</a> </li>    
+              <li><a href="staff.php"><i class="icon-plus-sign icon-large"></i> Add Staff</a>  </li>    
+              <li><a href="listCustomer.php"><i class="icon-group icon-large"></i> All Staffs</a> </li>    
 
 			<br><br><br><br><br><br><br><br><br>
 			<li>
@@ -127,29 +125,25 @@ $balance = $credit - $debit;
         </div>
 <div class="span10">
 	<div class="contentheader">
-			<i class="icon-table"></i> Customers
+			<i class="icon-table"></i> Staffs
 			</div>
 			<ul class="breadcrumb">
 			<li><a href="adminDashboard.php">Dashboard</a></li> /
-			<li class="active">Customer Details</li>
+			<li class="active">Staff Details</li>
 			</ul>
       <div style="margin-top: -19px; margin-bottom: 21px;">
 <a  href="listCustomer.php"><button class="btn btn-default btn-large" style="float: none;"><i class="icon icon-circle-arrow-left icon-large"></i> Back</button></a>
 </div>
 <div class="content">
-  <center><img src="<?php echo $scr;?>" alt="customer"class="rounded-circle" width="200"></center><br>
-  <label> Customer Name : <?php echo $rows['first_name']. " ". $rows['last_name'];?></label>
+  <!-- <center><img src="<?php echo $scr;?>" alt="customer"class="rounded-circle" width="200"></center><br> -->
+  <label> Staff Name : <?php echo $rows['Name'];?></label>
   <label> national Id: <?php echo $rows['national_id'];?></label>
   <label> Phone Number : <?php echo $rows['phone_number'];?></label>
   <label>  Email : <?php echo $rows['email'];?></label>
   <label>  Gender : <?php echo $rows['gender'];?></label>
   <label> Date of Birth : <?php echo $rows['date_of_birth'];?></label>
-  <label> Account Number : <?php echo $rows['account_number'];?></label>
-  <label> Type of account: <?php echo $rows['type_of_account'];?></label>
   <label> Branch of account: <?php echo $rows['branch'];?></label>
-  <label> Account status: <?php echo $rows['status'];?></label>
   <label> Customer address : <?php echo $rows['address'];?></label><br><hr>
-  <label style="font-size:22px"> Balance: <?php echo $balance;?> RWF</label>
 </div>
                          
 </body>

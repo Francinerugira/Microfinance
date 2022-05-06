@@ -20,17 +20,18 @@
       <div class="row-fluid">
 	<div class="span2"> 
           <div class="well sidebar-nav">
-         <center> <img src="../../img/bank.png" alt="bank"class="rounded-circle" width="100"></center><br>
               <ul class="nav nav-list">
               
               <li  class="active"><a href="tellerDashboard.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li> 
               <li><a href="change.php"><i class="icon-user icon-2x"></i>	New Password</a></li>
-              <li><a href="credit.php"><i class="icon-money icon-2x"></i> Credit Customer</a>  </li>  
-              <li ><a href="debit.php"><i class="icon-money icon-2x"></i> Debit Customer</a>  </li>  
-
+              <li><a href="balance.php"><i class="icon-money icon-2x"></i>	Balance</a></li>
+              <li><a href="transaction.php"><i class="icon-money icon-2x"></i>	View transaction</a></li>
+              <li><a href="customer.php"><i class="icon-plus-sign icon-2x"></i> Add Customer</a>  </li> 
+              <li><a href="credit.php"><i class="icon-money icon-2x"></i> Deposit</a>  </li>  
+              <li ><a href="debit.php"><i class="icon-money icon-2x"></i> Withdraw</a>  </li> 
+              <li ><a href="statment.php"><i class="icon-money icon-2x"></i> Statment</a>  </li> 
               <li><a href="listCustomer.php"><i class="icon-group icon-2x"></i> All Customers</a> </li>  
-
-			<br><br><br><br><br><br><br><br><br>
+<br>
 			<li>
 			 <div class="hero-unit-clock">
 		
@@ -51,13 +52,18 @@
 			<li class="active">Dashboard</li>
 			</ul>
     <?php include('header.php');?>
-    <br><br><br>
+    
 <font style=" font:bold 44px 'Aleo'; text-shadow:1px 1px 25px #000; color:#fff;"><center>AlphaMicrofinanceLtd System</center></font>
 <div class="dashboard">
               <a href="change.php"> <span><i class="icon-user icon-2x"></i> <br> <br>	CHANGE PASSWORD </span> </a>
+              <a href="balance.php"> <span><i class="icon-money icon-2x"></i> <br> <br>	BALANCE </span> </a>
+              <!-- <a href="flow.php"> <span><i class="icon-money icon-2x"></i> <br> <br>	REQUEST FLOW </span> </a> -->
+              <a href="transaction.php"> <span><i class="icon-money icon-2x"></i> <br> <br>	VIEW TRANSACTION </span> </a>
+	            <a href="customer.php"> <span><i class="icon-plus-sign icon-2x"></i><br><br>	ADD NEW CUSTOMER </span></a>
                <a href="listCustomer.php"> <span><i class="icon-group icon-2x"></i><br><br>	ALL CUSTOMER </span> </a>
-               <a href="credit.php"> <span><i class="icon-money icon-2x"></i><br><br>	CREDIT CUSTOMER </span></a>
-               <a href="debit.php"> <span><i class="icon-money icon-2x"></i><br><br>	DEBIT CUSTOMER </span> </a>
+               <a href="credit.php"> <span><i class="icon-money icon-2x"></i><br><br>	DEPOSIT </span></a>
+               <a href="debit.php"> <span><i class="icon-money icon-2x"></i><br><br>	WITHDRAW  </span> </a>
+               <a href="statment.php"> <span><i class="icon-money icon-2x"></i><br><br>	ACCOUNT STATMENT  </span> </a>
                <a href="../../index.php"> <span><font color="red"><i class="fa fa-power-off icon-2x"></i></font>  <br> <br>	LOGOUT </span> </a>
 
 			</div>

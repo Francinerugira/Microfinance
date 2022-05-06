@@ -5,6 +5,7 @@ Credit and Debit Record
 </title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <link href="../fontawesome/css/all.css" media="screen" rel="stylesheet" type="text/css" />
+<script src="../js/application.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
  <link href="../css/bootstrap.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="../css/DT_bootstrap.css">
@@ -59,10 +60,12 @@ $(function(){
               
               <li><a href="managerDashboard.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
               <li><a href="change.php"><i class="icon-user icon-2x"></i> New Password </a></li>
-              <li><a href="listCustomer.php"><i class="icon-group icon-2x"></i> All Customers</a> </li>  
+              <li><a href="flow.php"><i class="icon-user icon-2x"></i> Requested Flow </a></li>
+              <li><a href="listCustomer.php"><i class="icon-group icon-2x"></i> All Customers</a> </li> 
+              <li><a href="statment.php"><i class="icon-money icon-2x"></i> Statment</a> </li>  
               <li class="active"><a href="report.php"><i class="icon-bar-chart icon-2x"></i> Report</a> </li> 
 
-			<br><br><br><br><br><br><br><br><br>
+			<br><br><br>
 			<li>
 			 <div class="hero-unit-clock">
 			<form name="clock">
@@ -112,15 +115,19 @@ Credits and Debits Report from&nbsp;<?php echo $_GET['date1'] ?>&nbsp;to&nbsp;<?
 ?>
 </div>
 
+<input type="text" style="padding:10px; width: 50%" name="filter"  id="filter" placeholder="Search transaction..." autocomplete="off" />
 
 <table border="1" cellpadding="4" cellspacing="1" style="font-size: 18px; text-align:left; " width="80%">
 	
 	<thead>
 		<tr>
-			<th> Credit Date </th>
+			<th> Date </th>
 			<th> Action </th>
 			<th> Description </th>
+			<th> Teller  </th>
+			<th> Account nbr  </th>
 			<th> Amount  </th>
+			
 		
 		</tr>
 	</thead>
@@ -129,11 +136,11 @@ Credits and Debits Report from&nbsp;<?php echo $_GET['date1'] ?>&nbsp;to&nbsp;<?
 			<?php 
 				include('../../db_connection.php');
                 if(!isset($_GET['date1']) && !isset($_GET['date2'])){
-				$result = $conn->query("SELECT * FROM transactions WHERE cust_id = 'bank'");
+				$result = $conn->query("SELECT * FROM transactions INNER JOIN customers ON transactions.cust_id = customers.customer_id INNER JOIN staffs ON transactions.teller = staffs.staff_id WHERE cust_id != 'bank'");
                 }else{
                     $d1=$_GET['date1'];
 				    $d2=$_GET['date2'];
-				$result = $conn->query("SELECT * FROM transactions WHERE transaction_date BETWEEN '$d1' AND '$d2' AND cust_id = 'bank' ");
+				$result = $conn->query("SELECT * FROM transactions INNER JOIN staffs ON transactions.teller = staffs.staff_id WHERE transaction_date BETWEEN '$d1' AND '$d2' AND cust_id != 'bank' ");
                 }
 
 				
@@ -143,7 +150,10 @@ Credits and Debits Report from&nbsp;<?php echo $_GET['date1'] ?>&nbsp;to&nbsp;<?
 			<td><?php echo $row['transaction_date']; ?></td>
 			<td><?php echo $row['action']; ?></td>
 			<td><?php echo $row['description']; ?></td>
+			<td><?php echo $row['Name']; ?></td>
+			<td><?php echo $row['account_number']; ?></td>
 			<td><?php echo $row['amount']; ?></td>
+			
 			
 			
 			 <?php
@@ -155,30 +165,28 @@ Credits and Debits Report from&nbsp;<?php echo $_GET['date1'] ?>&nbsp;to&nbsp;<?
 		
 	</tbody>
 	<thead>
+		
 		<tr>
-			<th colspan="3" style="border-top:1px solid #999999"> Total Credits for bank: </th>
+			<th colspan="5" style="border-top:1px solid #999999"> Total Balance: </th>
 			<th colspan="1" style="border-top:1px solid #999999"> 
 			<?php
+			    $result = $conn->query("SELECT sum(bank_balance) as sum FROM bank_balances ");
+				$row = $result->fetch_assoc();
+				$bank_balance = $row['sum'];
+
 				if(!isset($_GET['date1']) && !isset($_GET['date2'])){
-                    $results = $conn->query("SELECT sum(amount) as sum FROM transactions WHERE cust_id = 'bank' AND action = 'credit' ");
-                }else{
+                    $result = $conn->query("SELECT sum(amount) as sum FROM transactions WHERE cust_id = 'bank' AND action = 'credit' ");
+                    $row = $result->fetch_assoc();
+					$balance_credit = $row['sum'];
+				}else{
                     $d1=$_GET['date1'];
                     $d2=$_GET['date2'];
-                    $results = $conn->query("SELECT sum(amount) as sum FROM transactions WHERE transaction_date BETWEEN '$d1'AND '$d2' AND cust_id = 'bank' AND action = 'credit'");
-                
+                    $result = $conn->query("SELECT sum(amount) as sum FROM transactions WHERE transaction_date BETWEEN '$d1'AND '$d2' AND cust_id = 'bank' AND action = 'credit'");
+					$row = $result->fetch_assoc();
+					$balance_credit = $row['sum'];
+					
                 }
-				for($i=0; $rows = $results->fetch_assoc(); $i++){
-				echo $rows['sum'];
-				}
-				?>
-			</th>
-		
-				</th>
-		</tr>
-		<tr>
-			<th colspan="3" style="border-top:1px solid #999999"> Total Debits for bank: </th>
-			<th colspan="1" style="border-top:1px solid #999999"> 
-			<?php
+
 				if(!isset($_GET['date1']) && !isset($_GET['date2'])){
                     $results = $conn->query("SELECT sum(amount) as sum FROM transactions WHERE cust_id = 'bank' AND action = 'debit' ");
                 }else{
@@ -188,7 +196,8 @@ Credits and Debits Report from&nbsp;<?php echo $_GET['date1'] ?>&nbsp;to&nbsp;<?
                 
                 }
 				for($i=0; $rows = $results->fetch_assoc(); $i++){
-				echo $rows['sum'];
+					$sum = ($bank_balance + $rows['sum']) - $balance_credit;
+				echo $sum;
 				}
 				?>
 			</th>
@@ -204,9 +213,6 @@ Credits and Debits Report from&nbsp;<?php echo $_GET['date1'] ?>&nbsp;to&nbsp;<?
 </div>
 </div>
 
-<script>
-	$('#resultTable').tableExport();
-</script>
 
 
 </body>

@@ -77,8 +77,8 @@ if(isset($_POST['save'])){
       
         // Redirect back
         echo '<script>
-    alert(" Successfully credit customer!! ");
-window.location.href="credit.php";
+    alert(" Successfully withdraw customer!! ");
+window.location.href="debit.php";
 </script>';
     } else{
         echo "Something went wrong. Please try again later.";

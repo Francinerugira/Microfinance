@@ -23,12 +23,14 @@
          <center> <img src="../../img/bank.png" alt="bank"class="rounded-circle" width="100"></center><br>
               <ul class="nav nav-list">
               
-              <li  class="active"><a href="managerDashboard.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
+              <li class="active"><a href="managerDashboard.php"><i class="icon-dashboard icon-2x"></i> Dashboard </a></li>
               <li><a href="change.php"><i class="icon-user icon-2x"></i> New Password </a></li>
-              <li><a href="listCustomer.php"><i class="icon-group icon-2x"></i> All Customers</a> </li>  
+              <li><a href="flow.php"><i class="icon-user icon-2x"></i> Requested Flow </a></li>
+              <li><a href="listCustomer.php"><i class="icon-group icon-2x"></i> All Customers</a> </li> 
+              <li><a href="statment.php"><i class="icon-money icon-2x"></i> Statment</a> </li>  
               <li><a href="report.php"><i class="icon-bar-chart icon-2x"></i> Report</a> </li> 
 
-			<br><br><br><br><br><br><br><br><br>
+			<br><br><br>
 			<li>
 			 <div class="hero-unit-clock">
 		
@@ -52,9 +54,11 @@
     <br><br><br>
 <font style=" font:bold 44px 'Aleo'; text-shadow:1px 1px 25px #000; color:#fff;"><center>AlphaMicrofinanceLtd System</center></font>
 <div class="dashboard">
-    <a href="adminDashboard.php"> <span><i class="icon-dashboard icon-2x"></i> <br> <br>	DASHBOARD</span> </a>
+    
     <a href="change.php"> <span><i class="icon-user icon-2x"></i> <br> <br>	CHANGE PASSWORD </span> </a>
+    <a href="flow.php"> <span><i class="icon-dashboard icon-2x"></i> <br> <br>	REQUESTED FLOW</span> </a>
     <a href="listCustomer.php"> <span><i class="icon-group icon-2x"></i> <br> <br>	ALL CUSTOMER </span> </a>
+    <a href="statment.php"> <span><i class="icon-money icon-2x"></i> <br> <br>	ACCOUNT STATMENT </span> </a>
     <a href="report.php"> <span><i class="icon-bar-chart icon-2x"></i> <br> <br>	REPORT </span> </a>
     <a href="../../index.php"> <span><font color="red"><i class="fa fa-power-off icon-2x"></i></font>  <br> <br>	LOGOUT </span> </a>
 			</div>
